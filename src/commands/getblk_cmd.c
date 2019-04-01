@@ -3,7 +3,7 @@
 
 
 void getblk_cmd(int argc, char *argv[]) {
-  if (!initnum) {
+  if (!bufferHasBeenInitialised) {
     printf("Error! Nothing is started\n");
     printf("You should call init first\n");
     return;

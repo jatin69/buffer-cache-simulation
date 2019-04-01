@@ -1,142 +1,65 @@
 #include "./bufferCache.h"
 
-void PrintRoutine(Buffer *p, int index) {
-  if (index >= 10) {
-    if (p->blockNumber >= 100) {
-      printf("[%d : D%d ", index, p->blockNumber);
-    } else {
-      if (p->blockNumber >= 10) {
-        printf("[%d :  D%d ", index, p->blockNumber);
-      } else {
-        printf("[%d :   D%d ", index, p->blockNumber);
-      }
-    }
-  } else {
-    if (p->blockNumber >= 10) {
-      if (p->blockNumber >= 100) {
-        printf("[ %d : D%d ", index, p->blockNumber);
-      } else {
-        printf("[ %d :  D%d ", index, p->blockNumber);
-      }
-    } else {
-      printf("[ %d :   D%d ", index, p->blockNumber);
-    }
-  }
+void printBuffer(int index, Buffer *p) {
+  printf("[");
+  printf("%3d : D%3d ", index, p->blockNumber);
+  (p->status & BUFFER_DATA_OLD)             ? printf("O") : printf("-");
+  (p->status & BUFFER_AWAITED)              ? printf("W") : printf("-");
+  (p->status & KERNEL_READING_WRITING)      ? printf("K") : printf("-");
+  (p->status & BUFFER_MARKED_DELAYED_WRITE) ? printf("D") : printf("-");
+  (p->status & BUFFER_DATA_VALID)           ? printf("V") : printf("-");
+  (p->status & BUFFER_DATA_OLD)             ? printf("L") : printf("-");
+  printf("]");
 }
 
-void PrintState(Buffer *p) {
-  int state = p->status;
-  if (state & 0x20)
-    printf("O");
-  else
-    printf("-");
-  state = state << 1;
-
-  if (state & 0x20)
-    printf("W");
-  else
-    printf("-");
-  state = state << 1;
-
-  if (state & 0x20)
-    printf("K");
-  else
-    printf("-");
-  state = state << 1;
-
-  if (state & 0x20)
-    printf("D");
-  else
-    printf("-");
-  state = state << 1;
-
-  if (state & 0x20)
-    printf("V");
-  else
-    printf("-");
-  state = state << 1;
-
-  if (state & 0x20)
-    printf("L");
-  else
-    printf("-");
-}
-
-void PrintBufferOne(int index) {
-  int hkey = index / 3;
-  Buffer *p = hashQueue[hkey];
-  for (int i = index % 3; i >= 0; i--) {
-    p = p->hash_next;
-  }
-  PrintRoutine(p, index);
-  // printf("[ %d : %d ", index, p -> blockNumber);
-  PrintState(p);
-  printf("]\n");
-}
-
-void PrintBufferAll() {
+void printAllBuffers() {
   int index = 0;
   for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
-    for (Buffer *p = hashQueue[i]->hash_next; p != hashQueue[i]; p = p->hash_next) {
-      PrintRoutine(p, index);
-      PrintState(p);
-      printf("]\n");
+    Buffer *buf = hashQueue[i]->hash_next;
+    while(buf != hashQueue[i]) {
+      printBuffer(index, buf);
+      printf("\n");
+      buf = buf->hash_next;      
       index++;
     }
   }
 }
 
-void PrintHashLine(int hkey) {
-  int index = hkey * 3;
-  for (Buffer *p = hashQueue[hkey]->hash_next; p != hashQueue[hkey]; p = p->hash_next) {
-    // printf("\t[ %d : %d ", index, p -> blockNumber);
-    PrintRoutine(p, index);
-    PrintState(p);
-    printf("]  ");
-    index++;
-  }
-  printf("\n");
-}
-
-void PrintHashAll() {
-  // printf("Hash[n ...]\n");
+void printAllHashQueues() {
   int index = 0;
   for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
     printf("%d  :", i);
     for (Buffer *p = hashQueue[i]->hash_next; p != hashQueue[i]; p = p->hash_next) {
-      // printf("\t[ %d : %d ", index, p -> blockNumber);
-      PrintRoutine(p, index);
-      PrintState(p);
-      printf("]");
+      printBuffer(index, p);
       index++;
     }
     printf("\n");
   }
 }
 
-int SearchNum(int blockNumber) {
-  Buffer *buffer = searchBufferInHashQueue(blockNumber);
-  int index = 0;
-  for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
-    for (Buffer *p = hashQueue[i]->hash_next; p != hashQueue[i]; p = p->hash_next) {
-      if (p == buffer)
-        return index;
-      index++;
+void printFreeList() {
+  int flag = 1;
+  for(Buffer *p = freeListDummyHead->free_next; p != freeListDummyHead; p = p->free_next) {
+    Buffer *buf = searchBlockInHashQueue(p->blockNumber); 
+    int index = 0;
+    for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
+      for(Buffer *p = hashQueue[i]->hash_next; p != hashQueue[i]; p = p->hash_next) {
+        if (p == buf) {  flag=1;  break; }
+        ++index;
+      }
+      if(flag){ break;  }
     }
-  }
-  return index;
-}
-
-
-void PrintFree() {
-  int index = 0;
-  for (Buffer *p = freeListDummyHead->free_next; p != freeListDummyHead; p = p->free_next) {
-    index = SearchNum(p->blockNumber);
-    PrintRoutine(p, index);
-    // printf("\t[ %d : %d ", index, p -> blockNumber);
-    PrintState(p);
-    printf("]");
+    printBuffer(index, p);
   }
   printf("\n");
 }
 
+void printState(Buffer *p) {
+  int state = p->status;
+  (p->status & BUFFER_DATA_OLD)             ? printf("O") : printf("-");
+  (p->status & BUFFER_AWAITED)              ? printf("W") : printf("-");
+  (p->status & KERNEL_READING_WRITING)      ? printf("K") : printf("-");
+  (p->status & BUFFER_MARKED_DELAYED_WRITE) ? printf("D") : printf("-");
+  (p->status & BUFFER_DATA_VALID)           ? printf("V") : printf("-");
+  (p->status & BUFFER_DATA_OLD)             ? printf("L") : printf("-");
+}

@@ -4,21 +4,25 @@
 void init_cmd(int argc, char *argv[]) {
   
   // if already initialised, free it all up
-  if (initnum) {
-    // @todo
-    // for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
-    //   while (!isHashQueueEmpty(i)) {
-    //     Buffer *ret = remove_hash_head();
-    //     free(ret);
-    //   }
-    // }
-    initnum = 0;
+  if (bufferHasBeenInitialised) {
+    for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
+      Buffer *trav = hashQueue[i];
+      while (!isHashQueueEmpty(i)) {
+        Buffer *ret = hashQueue[i]->hash_next;
+        removeBufferFromHashQueue(ret);
+        free(ret);
+      }
+    }
+    while(!isFreeListEmpty()){
+      Buffer* target = removeBufferFromHeadOfFreeList();
+      free(target);
+    }
+    bufferHasBeenInitialised = 0;
   }
 
   // reinitialise everything
-  initnum = 1;
-  malloced = 1;
-
+  bufferHasBeenInitialised = 1;
+  
   hashQueue =  (Buffer **)malloc(sizeof(Buffer *) * NO_OF_HASH_QUEUES);
   
 
@@ -59,59 +63,56 @@ void init_cmd(int argc, char *argv[]) {
   // Setting up hash Queue 0
   trav = hashQueue[0]->hash_next;
   trav->blockNumber = 28;
-  SetStatus(trav, STAT_VALID);
+  setState(trav, BUFFER_DATA_VALID);
 
   trav = trav->hash_next;
   trav->blockNumber = 4;
-  SetStatus(trav, STAT_VALID);
+  setState(trav, BUFFER_DATA_VALID);
 
   trav = trav->hash_next;
   trav->blockNumber = 64;
-  SetStatus(trav, STAT_VALID | STAT_LOCKED);
+  setState(trav, BUFFER_DATA_VALID | BUFFER_BUSY);
 
   // Setting up hash Queue 1
   trav = hashQueue[1]->hash_next;
   trav->blockNumber = 17;
-  SetStatus(trav, STAT_VALID | STAT_LOCKED);
+  setState(trav, BUFFER_DATA_VALID | BUFFER_BUSY);
   
   trav = trav->hash_next;
   trav->blockNumber = 5;
-  SetStatus(trav, STAT_VALID);
+  setState(trav, BUFFER_DATA_VALID);
   
   trav = trav->hash_next;
   trav->blockNumber = 97;
-  SetStatus(trav, STAT_VALID);
+  setState(trav, BUFFER_DATA_VALID);
   
   // Setting up hash Queue 2
   trav = hashQueue[2]->hash_next;
   trav->blockNumber = 98;
-  SetStatus(trav, STAT_VALID | STAT_LOCKED);
+  setState(trav, BUFFER_DATA_VALID | BUFFER_BUSY);
   trav = trav->hash_next;
   
   trav->blockNumber = 50;
-  SetStatus(trav, STAT_VALID | STAT_LOCKED);
+  setState(trav, BUFFER_DATA_VALID | BUFFER_BUSY);
   trav = trav->hash_next;
   
   trav->blockNumber = 10;
-  SetStatus(trav, STAT_VALID);
+  setState(trav, BUFFER_DATA_VALID);
   
   // Setting up hash Queue 3
   trav = hashQueue[3]->hash_next;
   trav->blockNumber = 3;
-  SetStatus(trav, STAT_VALID);
+  setState(trav, BUFFER_DATA_VALID);
   
   trav = trav->hash_next;
   trav->blockNumber = 35;
-  SetStatus(trav, STAT_VALID | STAT_LOCKED);
+  setState(trav, BUFFER_DATA_VALID | BUFFER_BUSY);
   
   trav = trav->hash_next;
   trav->blockNumber = 99;
-  SetStatus(trav, STAT_VALID | STAT_LOCKED);
+  setState(trav, BUFFER_DATA_VALID | BUFFER_BUSY);
 
-  // adding freelist
-  // trav = freeListDummyHead;
-
-// allocate memory for free List - dummy head
+  // allocate memory for free List - dummy head
   freeListDummyHead = (Buffer*)malloc(sizeof(Buffer));
   freeListDummyHead->free_next = freeListDummyHead;
   freeListDummyHead->free_prev = freeListDummyHead;
@@ -122,12 +123,4 @@ void init_cmd(int argc, char *argv[]) {
   freeList_push_back(freeListDummyHead, hashQueue[0]->hash_next);
   freeList_push_back(freeListDummyHead, hashQueue[1]->hash_next->hash_next->hash_next);
   freeList_push_back(freeListDummyHead, hashQueue[2]->hash_next->hash_next->hash_next);
-  
-  // insert_list(trav, hashQueue[3].hash_next, FREETAIL);
-  // insert_list(trav, hashQueue[1].hash_next->hash_next, FREETAIL);
-  // insert_list(trav, hashQueue[0].hash_next->hash_next, FREETAIL);
-  // insert_list(trav, hashQueue[0].hash_next, FREETAIL);
-  // insert_list(trav, hashQueue[1].hash_next->hash_next->hash_next, FREETAIL);
-  // insert_list(trav, hashQueue[2].hash_next->hash_next->hash_next, FREETAIL);
-  
 }

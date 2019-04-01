@@ -2,8 +2,7 @@
 #include "./externVariables.h"
 #include "./commands/commands.h"
 
-int malloced = 0;
-int initnum = 0;
+int bufferHasBeenInitialised = 0;
 
 #define MAX_LINE_SIZE 1024
 

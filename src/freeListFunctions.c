@@ -1,5 +1,13 @@
 #include "./bufferCache.h"
 
+int isFreeListEmpty() {
+  if (freeListDummyHead->free_next == freeListDummyHead &&
+      freeListDummyHead->free_prev == freeListDummyHead) {
+    return 1;
+  }
+  return 0;
+}
+
 void freeList_push_front(Buffer *head, Buffer *buf) {
   buf->free_prev = head;
   buf->free_next = head->free_next;
@@ -14,36 +22,21 @@ void freeList_push_back(Buffer *head, Buffer *buf) {
   head->free_prev = buf;
 }
 
-Buffer *getfreeListDummyHead() {
-  return freeListDummyHead->free_next;
-}
-
-Buffer *remove_free_head() {
+Buffer *removeBufferFromHeadOfFreeList() {
   if (isFreeListEmpty()) {
     return NULL;
   }
   Buffer *ret = freeListDummyHead->free_next;
-  while (CheckStatus(ret, STAT_DWR)) {
-    if (ret == freeListDummyHead) {
-      printf("Oops somethig wrong happening here\n");
-      return NULL;
-    }
+  while (isInState(ret, BUFFER_MARKED_DELAYED_WRITE)) {
     ret = ret->free_next;
   }
 
-  remove_hash(ret);
+  removeBufferFromHashQueue(ret);
   freeListDummyHead->free_next = freeListDummyHead->free_next->free_next;
   freeListDummyHead->free_next->free_prev = freeListDummyHead;
   return ret;
 }
 
-int isFreeListEmpty() {
-  if (freeListDummyHead->free_next == freeListDummyHead &&
-      freeListDummyHead->free_prev == freeListDummyHead) {
-    return 1;
-  }
-  return 0;
-}
 
 void removeBufferFromFreeList(Buffer *buffer) {
   Buffer *prev = buffer->free_prev;
@@ -54,10 +47,10 @@ void removeBufferFromFreeList(Buffer *buffer) {
   buffer->free_prev = NULL;
 }
 
-int isInFreeList(Buffer *buffer) {
-  for (Buffer *p = freeListDummyHead; p != freeListDummyHead; p = p->free_next) {
+int searchBufferInFreeList(Buffer *buffer) {
+  for (Buffer *p = freeListDummyHead->free_next; p != freeListDummyHead; p = p->free_next) {
     if (p == buffer) {
-      return p->blockNumber;
+      return 1;
     }
   }
   return 0;

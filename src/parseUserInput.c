@@ -37,3 +37,23 @@ int parseUserInput(char *cmdline, char **argv) {
   }
   return argc;
 }
+
+int parseStatus(char *argv) {
+  char val = argv[0];
+  switch (val) {
+    case ('L'):
+      return BUFFER_DATA_OLD;
+    case ('V'):
+      return BUFFER_DATA_VALID;
+    case ('D'):
+      return BUFFER_MARKED_DELAYED_WRITE;
+    case ('K'):
+      return KERNEL_READING_WRITING;
+    case ('W'):
+      return BUFFER_AWAITED;
+    case ('O'):
+      return BUFFER_DATA_OLD;
+    default:
+      return 0;
+  }
+}

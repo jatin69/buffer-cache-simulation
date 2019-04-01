@@ -1,10 +1,10 @@
 #include "./../bufferCache.h"
 #include "./../externVariables.h"
 
-Buffer *Clone(int blockNumber);
+int parseStatus(char *argv);
 
 void reset_cmd(int argc, char *argv[]) {
-  if (!initnum) {
+  if (!bufferHasBeenInitialised) {
     printf("Error! Nothing is started\n");
     printf("You should call init first\n");
     return;
@@ -14,10 +14,10 @@ void reset_cmd(int argc, char *argv[]) {
   } else {
     int state = 0;
     for (int i = 2; i < argc; i++) {
-      int num = ParseStatus(argv[i]);
+      int num = parseStatus(argv[i]);
       state += num;
     }
-    Buffer *buffer = Clone(atoi((argv[1])));
+    Buffer *buffer = searchBlockInHashQueue(atoi((argv[1])));
     // int blockNumber = atoi((argv[1]));
     if (!isalpha(argv[1][0])) {
       // if(1 <= blockNumber && blockNumber <=12){

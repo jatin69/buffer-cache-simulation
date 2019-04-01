@@ -9,11 +9,8 @@ void help_cmd(int num, char *name[]) {
   printf("\tinitial state shown in the figure 2.15. \n\n");
   
   // Buffer
-  printf("buf[n ...] \n");
-  printf("\tIf there is no input value, ");
-  printf("display all the status of the buffers.\n");
-  printf("\tIf there is an input block number, ");
-  printf("display the status of the buffer at the block number.\n\n");
+  printf("buf \n");
+  printf("display the status of all the buffers.\n");
   
   // hash
   printf("hash[n ...] \n");
