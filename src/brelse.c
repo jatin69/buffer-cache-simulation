@@ -12,12 +12,12 @@ void brelse(Buffer *buffer) {
   }
   // raise_cpu_level();
   if (CheckStatus(buffer, STAT_VALID) & !CheckStatus(buffer, STAT_OLD)) {
-    // insert_list(&freeListHead, buffer, FREETAIL);
-    freeList_push_back(&freeListHead, buffer);
+    // insert_list(&freeListDummyHead, buffer, FREETAIL);
+    freeList_push_back(freeListDummyHead, buffer);
     MakeStatus(buffer, STAT_VALID);
   } else {
-    // insert_list(&freeListHead, buffer, FREEHEAD);
-    freeList_push_front(&freeListHead, buffer);
+    // insert_list(&freeListDummyHead, buffer, FREEHEAD);
+    freeList_push_front(freeListDummyHead, buffer);
     MakeStatus(buffer, STAT_VALID);
   }
 

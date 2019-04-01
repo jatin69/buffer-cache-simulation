@@ -64,7 +64,7 @@ void PrintState(Buffer *p) {
 
 void PrintBufferOne(int index) {
   int hkey = index / 3;
-  Buffer *p = &hashQueue[hkey];
+  Buffer *p = hashQueue[hkey];
   for (int i = index % 3; i >= 0; i--) {
     p = p->hash_next;
   }
@@ -77,7 +77,7 @@ void PrintBufferOne(int index) {
 void PrintBufferAll() {
   int index = 0;
   for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
-    for (Buffer *p = hashQueue[i].hash_next; p != &hashQueue[i]; p = p->hash_next) {
+    for (Buffer *p = hashQueue[i]->hash_next; p != hashQueue[i]; p = p->hash_next) {
       PrintRoutine(p, index);
       PrintState(p);
       printf("]\n");
@@ -88,7 +88,7 @@ void PrintBufferAll() {
 
 void PrintHashLine(int hkey) {
   int index = hkey * 3;
-  for (Buffer *p = hashQueue[hkey].hash_next; p != &hashQueue[hkey]; p = p->hash_next) {
+  for (Buffer *p = hashQueue[hkey]->hash_next; p != hashQueue[hkey]; p = p->hash_next) {
     // printf("\t[ %d : %d ", index, p -> blockNumber);
     PrintRoutine(p, index);
     PrintState(p);
@@ -103,7 +103,7 @@ void PrintHashAll() {
   int index = 0;
   for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
     printf("%d  :", i);
-    for (Buffer *p = hashQueue[i].hash_next; p != &hashQueue[i]; p = p->hash_next) {
+    for (Buffer *p = hashQueue[i]->hash_next; p != hashQueue[i]; p = p->hash_next) {
       // printf("\t[ %d : %d ", index, p -> blockNumber);
       PrintRoutine(p, index);
       PrintState(p);
@@ -118,7 +118,7 @@ int SearchNum(int blockNumber) {
   Buffer *buffer = searchBufferInHashQueue(blockNumber);
   int index = 0;
   for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
-    for (Buffer *p = hashQueue[i].hash_next; p != &hashQueue[i]; p = p->hash_next) {
+    for (Buffer *p = hashQueue[i]->hash_next; p != hashQueue[i]; p = p->hash_next) {
       if (p == buffer)
         return index;
       index++;
@@ -130,7 +130,7 @@ int SearchNum(int blockNumber) {
 
 void PrintFree() {
   int index = 0;
-  for (Buffer *p = freeListHead.free_next; p != &freeListHead; p = p->free_next) {
+  for (Buffer *p = freeListDummyHead->free_next; p != freeListDummyHead; p = p->free_next) {
     index = SearchNum(p->blockNumber);
     PrintRoutine(p, index);
     // printf("\t[ %d : %d ", index, p -> blockNumber);

@@ -3,7 +3,7 @@
 Buffer *getblk(int blk_num)
 {
   int hash_key = blk_num % 4;
-  while (&hashQueue[hash_key] != NULL)
+  while (hashQueue[hash_key] != NULL)
   {
     Buffer *buffer = searchBufferInHashQueue(blk_num);
     if (buffer != NULL)
@@ -42,7 +42,7 @@ Buffer *getblk(int blk_num)
         return NULL;  // for now
       }
 
-      Buffer *ref = getFreeListHead();
+      Buffer *ref = getfreeListDummyHead();
       if (CheckStatus(ref, STAT_DWR))
       {
         // scenario 3

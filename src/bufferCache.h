@@ -57,10 +57,11 @@ int ParseStatus(char *argv);
  * 
 */
 #define NO_OF_HASH_QUEUES 4
-Buffer hashQueue[NO_OF_HASH_QUEUES];
-Buffer freeListHead;
+// Buffer hashQueue[NO_OF_HASH_QUEUES];
+// Buffer freeListDummyHead;
 
-// Buffer** hashQueue;
+Buffer** hashQueue;
+Buffer* freeListDummyHead;
 
 // Hash Queue functions
 void hashQueue_push_front(Buffer *h, Buffer *p);
@@ -78,7 +79,7 @@ void freeList_push_back(Buffer *h, Buffer *p);
 Buffer *remove_free_head();
 void removeBufferFromFreeList(Buffer*);
 int isInFreeList(Buffer *buffer);
-Buffer *getFreeListHead();
+Buffer *getfreeListDummyHead();
 int isFreeListEmpty();
 
 // pretty printing Functions

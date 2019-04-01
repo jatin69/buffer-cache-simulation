@@ -13,7 +13,7 @@ void getblk_cmd(int argc, char *argv[]) {
   } else {
     int t = atoi(argv[1]);
     
-    Buffer *blockedbuf = getblk(t);
+    Buffer *allocatedBuffer = getblk(t);
     
   }
 }

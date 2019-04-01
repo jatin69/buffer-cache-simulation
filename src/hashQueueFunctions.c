@@ -22,15 +22,15 @@ void remove_hash(Buffer *buf) {
 }
 
 Buffer *remove_hash_head(int i) {
-  Buffer *ret = hashQueue[i].hash_next;
+  Buffer *ret = hashQueue[i]->hash_next;
   remove_hash(ret);
   return ret;
 }
 
 int isHashQueueEmpty(int hashQueueNumber) {
   hashQueueNumber %= 4;
-  if (hashQueue[hashQueueNumber].hash_next == &hashQueue[hashQueueNumber] &&
-      hashQueue[hashQueueNumber].hash_prev == &hashQueue[hashQueueNumber]) {
+  if (hashQueue[hashQueueNumber]->hash_next == hashQueue[hashQueueNumber] &&
+      hashQueue[hashQueueNumber]->hash_prev == hashQueue[hashQueueNumber]) {
     return 1;
   }
   return 0;
@@ -39,7 +39,7 @@ int isHashQueueEmpty(int hashQueueNumber) {
 Buffer *searchBufferInHashQueue(int num) {
   int hash_key = num % 4;
   Buffer *p;
-  for (p = hashQueue[hash_key].hash_next; p != &hashQueue[hash_key]; p = p->hash_next)
+  for (p = hashQueue[hash_key]->hash_next; p != hashQueue[hash_key]; p = p->hash_next)
     if (p->blockNumber == num)
       return p;
 
@@ -50,6 +50,6 @@ void addToHashQueue(Buffer *elem) {
   int key = elem->blockNumber;
   int hkey = key % 4;
   AddStatus(elem, STAT_LOCKED);
-  hashQueue_push_back(&hashQueue[hkey], elem);
+  hashQueue_push_back(hashQueue[hkey], elem);
   // insert_list(&hashQueue[hkey], elem, HASHTA IL);
 }
