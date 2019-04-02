@@ -1,17 +1,17 @@
 #include "./bufferCache.h"
-#include "./externVariables.h"
 #include "./commands/commands.h"
-
-int bufferHasBeenInitialised = 0;
 
 #define MAX_LINE_SIZE 1024
 
+void init();
 int parseUserInput(char *cmdline, char **argv);
 
 int main() {
   
   char user_string[MAX_LINE_SIZE];
-  
+  // initialise buffer cache to figure 3.2
+  init();
+    
   while (1) {
     
 	printf("➜ ");

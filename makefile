@@ -7,7 +7,7 @@ OBJ_SRC=$(subst .c,.o,$(SRC))
 
 all: src
 
-src: $(OBJ_SRC) src/externVariables.h src/bufferCache.h
+src: $(OBJ_SRC) src/bufferCache.h
 	$(CXX) $(CFLAGS) -c -o src/main.o src/main.c
 	$(CXX) $(CFLAGS) -o bufcache $(OBJ_SRC)
 

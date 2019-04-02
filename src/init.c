@@ -1,35 +1,14 @@
-#include "./../bufferCache.h"
-#include "./../externVariables.h"
+#include "./bufferCache.h"
 
-void init_cmd(int argc, char *argv[]) {
+/**
+ * Initialise Buffer Cache to Fig 3.3
+ */
+void init() {
   
-  // if already initialised, free it all up
-  if (bufferHasBeenInitialised) {
-    for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
-      Buffer *trav = hashQueue[i];
-      while (!isHashQueueEmpty(i)) {
-        Buffer *ret = hashQueue[i]->hash_next;
-        removeBufferFromHashQueue(ret);
-        free(ret);
-      }
-    }
-    while(!isFreeListEmpty()){
-      Buffer* target = removeBufferFromHeadOfFreeList();
-      free(target);
-    }
-    bufferHasBeenInitialised = 0;
-  }
-
-  // reinitialise everything
-  bufferHasBeenInitialised = 1;
-  
+  printf("Initialising ...\n");
+  printf("Creating Hash Queues ... ");
   hashQueue =  (Buffer **)malloc(sizeof(Buffer *) * NO_OF_HASH_QUEUES);
   
-
-  // for(int i=0;i<NO_OF_HASH_QUEUES;i++){
-  //   hashQueue[i]=(Buffer *)malloc(sizeof(Buffer)*3);
-  // }
-  // loop all hashQueues
   for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
 
     // dummy head
@@ -52,14 +31,23 @@ void init_cmd(int argc, char *argv[]) {
     
     Buffer *r = malloc(sizeof(Buffer));
     hashQueue_push_front(hashQueue[i]->hash_next->hash_next, r);
-    
-    // insert_list(&hashQueue[i], p, HASHHEAD);
-    // insert_list(hashQueue[i].hash_next, q, HASHHEAD);
-    // insert_list(((hashQueue[i].hash_next)->hash_next), r, HASHHEAD);
+
   }
+  printf("Done\n");
+
+  // allocate memory for free List - dummy head
+  printf("Creating Free List ... ");
+  freeListDummyHead = (Buffer*)malloc(sizeof(Buffer));
+  freeListDummyHead->free_next = freeListDummyHead;
+  freeListDummyHead->free_prev = freeListDummyHead;
+  printf("Done\n");
+
 
   Buffer *trav;
 
+  printf("Setting up Buffer Cache as per figure 3.2 of Maurice J Bach\n");
+  
+  printf("Setting up Hash Queues ... ");
   // Setting up hash Queue 0
   trav = hashQueue[0]->hash_next;
   trav->blockNumber = 28;
@@ -111,16 +99,21 @@ void init_cmd(int argc, char *argv[]) {
   trav = trav->hash_next;
   trav->blockNumber = 99;
   setState(trav, BUFFER_DATA_VALID | BUFFER_BUSY);
+  printf("Done\n");
 
-  // allocate memory for free List - dummy head
-  freeListDummyHead = (Buffer*)malloc(sizeof(Buffer));
-  freeListDummyHead->free_next = freeListDummyHead;
-  freeListDummyHead->free_prev = freeListDummyHead;
-
+  
+  printf("Setting up Free List ... ");
   freeList_push_back(freeListDummyHead, hashQueue[3]->hash_next);
   freeList_push_back(freeListDummyHead, hashQueue[1]->hash_next->hash_next);
   freeList_push_back(freeListDummyHead, hashQueue[0]->hash_next->hash_next);
   freeList_push_back(freeListDummyHead, hashQueue[0]->hash_next);
   freeList_push_back(freeListDummyHead, hashQueue[1]->hash_next->hash_next->hash_next);
   freeList_push_back(freeListDummyHead, hashQueue[2]->hash_next->hash_next->hash_next);
+  printf("Done\n");
+
+  printf("Setting up Wait Queue ... ");
+  waitingQueue = (int*)malloc(sizeof(int)*SIZE_OF_WAITING_QUEUE);
+  printf("Done\n");
+
+  printf("Ready to go.\n");
 }

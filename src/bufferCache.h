@@ -46,7 +46,7 @@ void setState(Buffer *buffer, STATE state);
 int isInState(Buffer *buffer, STATE state);
 
 #define SIZE_OF_WAITING_QUEUE 10
-int waitingQueue[SIZE_OF_WAITING_QUEUE];
+int* waitingQueue;
 
 typedef enum WAITING_TYPE{
   WAITING_FOR_THIS_BUFFER = -1,   // negative for this buffer
