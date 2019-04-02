@@ -4,6 +4,7 @@
 // standard headers
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
@@ -43,6 +44,19 @@ void addState(Buffer *buffer, STATE state);
 void removeState(Buffer *buffer, STATE state);
 void setState(Buffer *buffer, STATE state);
 int isInState(Buffer *buffer, STATE state);
+
+#define SIZE_OF_WAITING_QUEUE 10
+int waitingQueue[SIZE_OF_WAITING_QUEUE];
+
+typedef enum WAITING_TYPE{
+  WAITING_FOR_THIS_BUFFER = -1,   // negative for this buffer
+  WAITING_FOR_ANY_BUFFER = 1      // positive for any buffer
+} WAITING_TYPE;
+
+void addToWaitingQueue(int blk_num, WAITING_TYPE WAITING_FOR_THIS_BUFFER);
+int getProcessFromWaitingQueue(int blockNumber);
+int isWaitingQueueEmpty();
+void printWaitingQueue();
 
 /**Doubly Linked List Management
  * 

@@ -11,28 +11,17 @@ void reset_cmd(int argc, char *argv[]) {
   }
   if (argc <= 2) {
     printf("Specify block number and status code\n");
-  } else {
-    int state = 0;
-    for (int i = 2; i < argc; i++) {
-      int num = parseStatus(argv[i]);
-      state += num;
+  } 
+  else {
+    int blockNumber = atoi(argv[1]);
+    Buffer *buffer = searchBlockInHashQueue(blockNumber);
+    
+    if (buffer == NULL) {
+      printf("Invaid. This Block is not in cache currently.\n");
+      return;
     }
-    Buffer *buffer = searchBlockInHashQueue(atoi((argv[1])));
-    // int blockNumber = atoi((argv[1]));
-    if (!isalpha(argv[1][0])) {
-      // if(1 <= blockNumber && blockNumber <=12){
-      if (buffer == NULL) {
-        printf("invaid cannot get buffer\n");
-      }
-      // int midstate = (buffer -> status) & state;
-      // buffer -> status = buffer -> status & midstate;
-      buffer->status = buffer->status ^ state;
-
-      //  else{
-      // printf("Errror input value for block number should be within 1~12\n");
-      //}
-    } else {
-      printf("This is not a number\n");
+    for (int i = 2; i < argc; i++) {
+      removeState(buffer, parseStatus(argv[i]));
     }
   }
 }

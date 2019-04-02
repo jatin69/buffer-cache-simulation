@@ -62,6 +62,7 @@ free
 getblk 18
 hash
 free
+wait
 EOS
 echo -e "\n\n"
 read -r -p "Press Enter key to continue ..." key
@@ -76,6 +77,7 @@ free
 getblk 64
 hash
 free
+wait
 EOS
 echo -e "\n\n"
 read -r -p "Press Enter key to continue ..." key

@@ -12,8 +12,6 @@ void getblk_cmd(int argc, char *argv[]) {
     printf("Please specify block number\n");
   } else {
     int t = atoi(argv[1]);
-    
     Buffer *allocatedBuffer = getblk(t);
-    
   }
 }

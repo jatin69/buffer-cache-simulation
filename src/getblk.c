@@ -17,8 +17,7 @@ Buffer *getblk(int blk_num)
         printf("Process goes to sleep.\n");
         printf("Process will wake up when this buffer becomes free\n");
         addState(buffer, BUFFER_AWAITED);
-        // addToWaitingQueue(blk_num, WAITING_FOR_THIS_BUFFER);
-        // @todo : can also be done
+        addToWaitingQueue(blk_num, WAITING_FOR_THIS_BUFFER);
         // sleep(); 
         // continue;
         return NULL;  // for now
@@ -41,8 +40,7 @@ Buffer *getblk(int blk_num)
         printf("The kernel cannot find the block on the hash queue, and the free list of buffers is empty.\n");
         printf("Process goes to sleep.\n");
         printf("Process will wake up when any buffer becomes free.\n");
-        // addToWaitingQueue(blk_num, WAITING_FOR_ANY_BUFFER);
-        // @todo : this can be done
+        addToWaitingQueue(blk_num, WAITING_FOR_ANY_BUFFER);
         // sleep();
         // continue;
         return NULL;  // for now

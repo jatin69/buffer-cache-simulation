@@ -8,7 +8,7 @@ void printBuffer(int index, Buffer *p) {
   (p->status & KERNEL_READING_WRITING)      ? printf("K") : printf("-");
   (p->status & BUFFER_MARKED_DELAYED_WRITE) ? printf("D") : printf("-");
   (p->status & BUFFER_DATA_VALID)           ? printf("V") : printf("-");
-  (p->status & BUFFER_DATA_OLD)             ? printf("L") : printf("-");
+  (p->status & BUFFER_BUSY)                 ? printf("L") : printf("-");
   printf("]");
 }
 
@@ -63,3 +63,23 @@ void printState(Buffer *p) {
   (p->status & BUFFER_DATA_VALID)           ? printf("V") : printf("-");
   (p->status & BUFFER_DATA_OLD)             ? printf("L") : printf("-");
 }
+
+
+void printWaitingQueue() {
+  int pcount = 1;
+  for(int i=0; i<SIZE_OF_WAITING_QUEUE; ++i) {
+    if(waitingQueue[i] > 0){
+      printf("[ getblk %d : %s] ", waitingQueue[i], "WAITING FOR ANY BUFFER");
+      pcount++;
+    }
+    else if(waitingQueue[i] < 0){
+      printf("[ getblk %d : %s] ", waitingQueue[i]*-1, "WAITING FOR THIS BUFFER");
+      pcount++;
+    }
+    if(pcount % 4 ==0){
+      printf("\n");
+    }
+  }
+  printf("\n");
+}
+

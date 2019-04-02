@@ -10,3 +10,6 @@ A simple buffer cache implementation for simulation of algorithms like `getblk` 
 - Run tests and see scenarios by executing test script `./test.sh`
 - Alternatively, use `make test`
 
+## todo
+
+- set status checking
