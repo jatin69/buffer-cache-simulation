@@ -1,14 +1,26 @@
 #include "./bufferCache.h"
 
+void allocateMemoryForDataStructures();
+void setupDataStructuresAsPerFigure();
+
 /**
- * Initialise Buffer Cache to Fig 3.3
- */
+ * Initializing necessary structures
+*/
 void init() {
   
-  printf("Initialising ...\n");
+  printf("Initializing ...\n");
+  allocateMemoryForDataStructures();
+  setupDataStructuresAsPerFigure();
+  printf("Ready to go.\n");
+}
+
+/**
+ * Allocate Memory for Structures
+*/
+void allocateMemoryForDataStructures() {
   printf("Creating Hash Queues ... ");
+
   hashQueue =  (Buffer **)malloc(sizeof(Buffer *) * NO_OF_HASH_QUEUES);
-  
   for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
 
     // dummy head
@@ -21,33 +33,42 @@ void init() {
     hashQueue[i]->free_next = freeListDummyHead;
     hashQueue[i]->free_prev = freeListDummyHead;
     hashQueue[i]->cache_data = NULL;
-    
-    // put 3 buffers in each hash queue
-    Buffer *p = malloc(sizeof(Buffer));
-    hashQueue_push_front(hashQueue[i], p);
-    
-    Buffer *q = malloc(sizeof(Buffer));
-    hashQueue_push_front(hashQueue[i]->hash_next, q);
-    
-    Buffer *r = malloc(sizeof(Buffer));
-    hashQueue_push_front(hashQueue[i]->hash_next->hash_next, r);
-
   }
   printf("Done\n");
 
-  // allocate memory for free List - dummy head
   printf("Creating Free List ... ");
   freeListDummyHead = (Buffer*)malloc(sizeof(Buffer));
   freeListDummyHead->free_next = freeListDummyHead;
   freeListDummyHead->free_prev = freeListDummyHead;
   printf("Done\n");
 
+  printf("Creating Wait Queue ... ");
+  waitingQueue = (int*)malloc(sizeof(int)*SIZE_OF_WAITING_QUEUE);
+  printf("Done\n");
 
+}
+
+/**
+ * Initialise Buffer Cache to Fig 3.3
+ */
+void setupDataStructuresAsPerFigure() {
   Buffer *trav;
 
   printf("Setting up Buffer Cache as per figure 3.2 of Maurice J Bach\n");
   
   printf("Setting up Hash Queues ... ");
+   
+  for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
+    // put 3 buffers in each hash queue
+    Buffer *p = malloc(sizeof(Buffer));
+    hashQueue_push_front(hashQueue[i], p);
+
+    Buffer *q = malloc(sizeof(Buffer));
+    hashQueue_push_front(hashQueue[i]->hash_next, q);
+
+    Buffer *r = malloc(sizeof(Buffer));
+    hashQueue_push_front(hashQueue[i]->hash_next->hash_next, r);
+  }
   // Setting up hash Queue 0
   trav = hashQueue[0]->hash_next;
   trav->blockNumber = 28;
@@ -111,9 +132,5 @@ void init() {
   freeList_push_back(freeListDummyHead, hashQueue[2]->hash_next->hash_next->hash_next);
   printf("Done\n");
 
-  printf("Setting up Wait Queue ... ");
-  waitingQueue = (int*)malloc(sizeof(int)*SIZE_OF_WAITING_QUEUE);
-  printf("Done\n");
-
-  printf("Ready to go.\n");
 }
+

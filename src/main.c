@@ -7,34 +7,41 @@ void init();
 int parseUserInput(char *cmdline, char **argv);
 
 int main() {
-  
-  char user_string[MAX_LINE_SIZE];
-  // initialise buffer cache to figure 3.2
-  init();
-    
-  while (1) {
-    
-	printf("➜ ");
-	if(fgets(user_string, MAX_LINE_SIZE, stdin)==NULL){
-    exit(1);
-  };
-	
-  char *argv[16];
-  int argc = parseUserInput(user_string, argv);
-  if (argc == 0) { continue; }
 
-	commandFunctionMap *p = commandTable;
-    while(p->cmd) {
+  char user_string[MAX_LINE_SIZE];
+
+  // initialise data structures
+  init();
+
+  while (1) {
+
+	// prompt for user
+    printf("➜ ");
+    if (fgets(user_string, MAX_LINE_SIZE, stdin) == NULL) {
+      exit(1);
+    };
+
+	// parse user input properly
+    char *argv[MAX_LINE_SIZE];
+    int argc = parseUserInput(user_string, argv);
+    if (argc == 0) {
+      continue;
+    }
+
+	// match user entered command to appropriate command handler
+    commandFunctionMap *p = commandTable;
+    while (p->cmd) {
       if (strcmp(argv[0], p->cmd) == 0) {
         (*p->func)(argc, argv);
         break;
       }
-	  p++;
+      p++;
     }
 
+	// if not match occurs, command is not available yet
     if (p->cmd == NULL) {
       fprintf(stderr, "command not found: %s\n", argv[0]);
     }
+	
   } // end: while
-
 }

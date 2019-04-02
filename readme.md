@@ -1,6 +1,6 @@
 # Buffer Cache
 
-A simple buffer cache implementation for simulation of algorithms like `getblk` and `brelse`.
+A simple buffer cache implementation for simulation of `getblk` and `brelse` algorithms.
 
 ## How to Run
 
@@ -9,7 +9,3 @@ A simple buffer cache implementation for simulation of algorithms like `getblk` 
 - Alternatively, use `make run` 
 - Run tests and see scenarios by executing test script `./test.sh`
 - Alternatively, use `make test`
-
-## todo
-
-- set status checking

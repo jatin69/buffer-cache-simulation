@@ -1,18 +1,25 @@
 #include "./bufferCache.h"
 
+/**Brelse (Block Release) algorithm
+ * 
+*/
 void brelse(Buffer *buffer) {
   if(buffer == NULL){
     return;
   }
-  // wakeup();
+
+  // wakeupProcesses(WAITING_FOR_ANY_BUFFER);
   printf("Wakeup processes wating for any buffer\n");
+  
   if (isInState(buffer, BUFFER_BUSY | BUFFER_DATA_VALID | BUFFER_AWAITED)) {
-    // wakeup();
+    // wakeupProcesses(WAITING_FOR_THIS_BUFFER);
     printf("Wakeup processes waiting for buffer of blockNumber %d\n", buffer->blockNumber);
   }
-  printf("Raising CPU level to block interrupts.\n");
-  // raise_cpu_level();
 
+  // raise_cpu_level();
+  printf("Raising CPU level to block interrupts.\n");
+  
+  // choose whether to attach this buffer at the start or end of free list
   if (isInState(buffer, BUFFER_DATA_VALID) & !isInState(buffer, BUFFER_DATA_OLD)) {
     freeList_push_back(freeListDummyHead, buffer);
     setState(buffer, BUFFER_DATA_VALID);
@@ -21,22 +28,24 @@ void brelse(Buffer *buffer) {
     setState(buffer, BUFFER_DATA_VALID);
   }
   
-  printf("Lowering CPU level to allow interrupts.\n");
   // lower_cpu_level();
+  printf("Lowering CPU level to allow interrupts.\n");
+
+  // release buffer
   printf("RELEASING BUFFER.\nAdding Buffer to Freelist. \n");
 
   if(isWaitingQueueEmpty()){
-    printf("NO Process was waiting. So no race condition.");
+    printf("No Process was waiting. So no race condition.");
     return;
   }
 
-  // Then this
-  printf("Woken Up processes now race to obtain this free buffer.\n");
-  // randomly any of the woken up process wins
-  
+  printf("Woken Up processes now race to obtain this free buffer.\n");  
   int blk_num = getProcessFromWaitingQueue(buffer->blockNumber);
   
-  printf("RUNNING getblk for this process with block number %d\n", blk_num);
+  printf("Running getblk for this process with block number %d\n", blk_num);
   Buffer *allocatedBuffer = getblk(blk_num);
+  if(allocatedBuffer != NULL){
+    	printf("Buffer Allocated Successfully.\n");
+  }
   return;
 }

@@ -1,6 +1,5 @@
 CXX=gcc
-CFLAGS=-std=c99 
-# -Wall -Wextra
+CFLAGS=-std=c99 -Wall -Wextra -Wno-unused-parameter
 
 SRC=$(shell find ./src -name "*.c")
 OBJ_SRC=$(subst .c,.o,$(SRC))

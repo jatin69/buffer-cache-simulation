@@ -1,5 +1,6 @@
 #include "./bufferCache.h"
 
+// print Buffer with index, data and status
 void printBuffer(int index, Buffer *p) {
   printf("[");
   printf("%3d : D%3d ", index, p->blockNumber);
@@ -8,10 +9,11 @@ void printBuffer(int index, Buffer *p) {
   (p->status & KERNEL_READING_WRITING)      ? printf("K") : printf("-");
   (p->status & BUFFER_MARKED_DELAYED_WRITE) ? printf("D") : printf("-");
   (p->status & BUFFER_DATA_VALID)           ? printf("V") : printf("-");
-  (p->status & BUFFER_BUSY)                 ? printf("L") : printf("-");
+  (p->status & BUFFER_BUSY)                 ? printf("B") : printf("-");
   printf("]");
 }
 
+// print all buffers
 void printAllBuffers() {
   int index = 0;
   for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
@@ -25,6 +27,7 @@ void printAllBuffers() {
   }
 }
 
+// print all hash Queues
 void printAllHashQueues() {
   int index = 0;
   for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
@@ -37,6 +40,7 @@ void printAllHashQueues() {
   }
 }
 
+// print free list 
 void printFreeList() {
   int flag = 1;
   for(Buffer *p = freeListDummyHead->free_next; p != freeListDummyHead; p = p->free_next) {
@@ -47,24 +51,24 @@ void printFreeList() {
         if (p == buf) {  flag=1;  break; }
         ++index;
       }
-      if(flag){ break;  }
+      if(flag){ break; }
     }
     printBuffer(index, p);
   }
   printf("\n");
 }
 
+// print status
 void printState(Buffer *p) {
-  int state = p->status;
   (p->status & BUFFER_DATA_OLD)             ? printf("O") : printf("-");
   (p->status & BUFFER_AWAITED)              ? printf("W") : printf("-");
   (p->status & KERNEL_READING_WRITING)      ? printf("K") : printf("-");
   (p->status & BUFFER_MARKED_DELAYED_WRITE) ? printf("D") : printf("-");
   (p->status & BUFFER_DATA_VALID)           ? printf("V") : printf("-");
-  (p->status & BUFFER_DATA_OLD)             ? printf("L") : printf("-");
+  (p->status & BUFFER_BUSY)                 ? printf("B") : printf("-");
 }
 
-
+// print waiting queue
 void printWaitingQueue() {
   int pcount = 1;
   for(int i=0; i<SIZE_OF_WAITING_QUEUE; ++i) {
