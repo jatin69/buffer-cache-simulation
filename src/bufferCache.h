@@ -65,6 +65,7 @@ typedef enum WAITING_TYPE{
 
 // Managing waiting Queue
 void addToWaitingQueue(int blk_num, WAITING_TYPE WAITING_FOR_THIS_BUFFER);
+int findInWaitingQueue(int blockNumber);
 int getProcessFromWaitingQueue(int blockNumber);
 int isWaitingQueueEmpty();
 

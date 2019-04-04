@@ -59,6 +59,10 @@ getblk 18
 hash
 free
 wait
+brelse 28
+hash
+free
+wait
 EOS
 echo -e "\n\n"
 read -r -p "Press Enter key to continue ..." key
@@ -70,6 +74,14 @@ echo -e "\n ********** Scenario 5 **********\n"
 hash
 free
 getblk 64
+hash
+free
+wait
+brelse 17
+hash
+free
+wait
+brelse 64
 hash
 free
 wait

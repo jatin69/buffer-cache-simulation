@@ -21,6 +21,15 @@ void addToWaitingQueue(int blk_num, WAITING_TYPE waitType) {
     waitingQueue[len] = blk_num * waitType;
 }
 
+int findInWaitingQueue(int blk_num) {
+    blk_num = blk_num*-1;
+    for(int i=0; i<SIZE_OF_WAITING_QUEUE; ++i){
+        if(waitingQueue[i] == blk_num){
+            return 1;
+        }
+    }
+    return 0;
+}
 
 int getProcessFromWaitingQueue(int blockNumber) {
 
@@ -70,6 +79,10 @@ int getProcessFromWaitingQueue(int blockNumber) {
                 break;
             }
         }
+    }
+
+    if(returnValue == 0){
+        return 0;
     }
 
     // print winner and its required block number 

@@ -40,20 +40,24 @@ void printAllHashQueues() {
   }
 }
 
+int getIndexOfBuffer(Buffer *buf){
+  int index = 0;
+  for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
+    for (Buffer *p = hashQueue[i]->hash_next; p != hashQueue[i]; p = p->hash_next) {
+      if(buf == p){
+        return index;
+      }
+      index++;
+    }
+  }
+  return -1;
+}
+
 // print free list 
 void printFreeList() {
-  int flag = 1;
   for(Buffer *p = freeListDummyHead->free_next; p != freeListDummyHead; p = p->free_next) {
     Buffer *buf = searchBlockInHashQueue(p->blockNumber); 
-    int index = 0;
-    for (int i = 0; i < NO_OF_HASH_QUEUES; i++) {
-      for(Buffer *p = hashQueue[i]->hash_next; p != hashQueue[i]; p = p->hash_next) {
-        if (p == buf) {  flag=1;  break; }
-        ++index;
-      }
-      if(flag){ break; }
-    }
-    printBuffer(index, p);
+    printBuffer(getIndexOfBuffer(buf), buf);
   }
   printf("\n");
 }
