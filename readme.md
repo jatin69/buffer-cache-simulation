@@ -2,7 +2,15 @@
 
 A simple buffer cache implementation for simulation of `getblk` and `brelse` algorithms.
 
-Find the project writeup [here](./writeup.md) containing several key decisions of the project.
+## Overview
+
+In this implementation, the main program act as `kernel` and manipulates the buffer cache, while user input acts as coming and going `processes`. User controls which block to get and release. User can also manipulate buffer status. This gives us complete control over the simulation.  Also we can view the buffer cache, freelist, buffer list, and sleeping processes at all times.
+
+This is a single-process synchronous program, so there is no added complexity of managing threads. 
+<br>Read the [project writeup](./writeup.md) to know more about the current implementation.
+
+For a multi-threaded implementation, visit [this repository](https://github.com/jatin69/multithreaded-buffer-cache-simulation).
+
 
 ## How to Run
 
